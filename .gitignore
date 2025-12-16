@@ -1,0 +1,18 @@
+# --- AI & Python Safety ---
+__pycache__/
+*.py[cod]
+venv/
+.pytest_cache/
+
+# --- Heavy Data (Vector Store) ---
+chroma_db/
+data/
+
+# --- Secrets (CRITICAL) ---
+.env
+.env.local
+.DS_Store
+
+# --- Frontend ---
+node_modules/
+.next/
