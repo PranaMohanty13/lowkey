@@ -1,26 +1,238 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Lowkey Dark Theme */
+  --background: #181511;
+  --foreground: #f5f0e8;
+  
+  /* Core colors */
+  --primary: #ec8313;
+  --primary-glow: rgba(236, 131, 19, 0.2);
+  
+  /* Surfaces */
+  --surface: #27211c;
+  --surface-border: #393128;
+  
+  /* Message bubbles */
+  --forest: #273028;
+  --forest-border: #3e4a3f;
+  --clay: #8c4b28;
+  --clay-border: #a65d36;
+  
+  /* Text */
+  --text-primary: #f5f0e8;
+  --text-secondary: #a69b8d;
+  --text-muted: #6b6560;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--primary);
+  --color-surface: var(--surface);
+  --color-surface-border: var(--surface-border);
+  --color-forest: var(--forest);
+  --color-forest-border: var(--forest-border);
+  --color-clay: var(--clay);
+  --color-clay-border: var(--clay-border);
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Noto Sans", sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Subtle noise texture */
+.bg-noise {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Selection */
+::selection {
+  background: var(--primary);
+  color: white;
+}
+
+/* Lowkey prose styling for markdown in chat messages */
+.prose-lowkey {
+  line-height: 1.7;
+}
+
+.prose-lowkey p {
+  margin: 0.5rem 0;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.prose-lowkey p:first-child {
+  margin-top: 0;
+}
+
+.prose-lowkey p:last-child {
+  margin-bottom: 0;
+}
+
+/* Staggered animation delays for paragraphs */
+.prose-lowkey p:nth-child(1) { animation-delay: 0.1s; }
+.prose-lowkey p:nth-child(2) { animation-delay: 0.2s; }
+.prose-lowkey p:nth-child(3) { animation-delay: 0.3s; }
+.prose-lowkey p:nth-child(4) { animation-delay: 0.4s; }
+.prose-lowkey p:nth-child(5) { animation-delay: 0.5s; }
+.prose-lowkey p:nth-child(6) { animation-delay: 0.6s; }
+.prose-lowkey p:nth-child(7) { animation-delay: 0.7s; }
+.prose-lowkey p:nth-child(8) { animation-delay: 0.8s; }
+.prose-lowkey p:nth-child(9) { animation-delay: 0.9s; }
+.prose-lowkey p:nth-child(10) { animation-delay: 1.0s; }
+.prose-lowkey p:nth-child(n+11) { animation-delay: 1.1s; }
+
+.prose-lowkey strong {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.prose-lowkey em {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.prose-lowkey ul, .prose-lowkey ol {
+  margin: 0.75rem 0;
+  padding-left: 1.25rem;
+}
+
+.prose-lowkey li {
+  margin: 0.4rem 0;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+/* Staggered animation for list items */
+.prose-lowkey li:nth-child(1) { animation-delay: 0.15s; }
+.prose-lowkey li:nth-child(2) { animation-delay: 0.3s; }
+.prose-lowkey li:nth-child(3) { animation-delay: 0.45s; }
+.prose-lowkey li:nth-child(4) { animation-delay: 0.6s; }
+.prose-lowkey li:nth-child(5) { animation-delay: 0.75s; }
+.prose-lowkey li:nth-child(6) { animation-delay: 0.9s; }
+.prose-lowkey li:nth-child(7) { animation-delay: 1.05s; }
+.prose-lowkey li:nth-child(8) { animation-delay: 1.2s; }
+.prose-lowkey li:nth-child(n+9) { animation-delay: 1.35s; }
+
+.prose-lowkey li::marker {
+  color: var(--primary);
+}
+
+.prose-lowkey h1, .prose-lowkey h2, .prose-lowkey h3 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin: 1rem 0 0.5rem 0;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+}
+
+.prose-lowkey h1 { font-size: 1.25rem; }
+.prose-lowkey h2 { font-size: 1.1rem; }
+.prose-lowkey h3 { font-size: 1rem; }
+
+.prose-lowkey code {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: var(--primary);
+}
+
+.prose-lowkey pre {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+  animation-delay: 0.2s;
+}
+
+.prose-lowkey pre code {
+  background: none;
+  padding: 0;
+}
+
+.prose-lowkey a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose-lowkey a:hover {
+  opacity: 0.8;
+}
+
+.prose-lowkey blockquote {
+  border-left: 3px solid var(--primary);
+  padding-left: 1rem;
+  margin: 0.75rem 0;
+  color: var(--text-secondary);
+  font-style: italic;
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards;
+  animation-delay: 0.2s;
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Scale in animation for modal */
+@keyframes scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
+
+/* Blinking cursor for streaming */
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+
+.streaming-cursor::after {
+  content: '▋';
+  color: var(--primary);
+  animation: blink 1s infinite;
+  margin-left: 2px;
 }
