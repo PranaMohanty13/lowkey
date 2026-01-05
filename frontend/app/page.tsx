@@ -1,86 +1,57 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { TextStreamChatTransport } from "ai";
+import { HeaderBar } from "./components/HeaderBar";
+import { EmptyState } from "./components/EmptyState";
+import { MessageList } from "./components/MessageList";
+import { ChatInput } from "./components/ChatInput";
+import { ErrorBanner } from "./components/ErrorBanner";
 
 export default function Home() {
   const [input, setInput] = useState("");
 
   const { messages, sendMessage, status, error } = useChat({
-    // IMPORTANT: point directly at FastAPI (not a Next.js API route)
     transport: new TextStreamChatTransport({
       api: "http://localhost:8000/api/chat",
     }),
   });
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-8">
-      <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-semibold">Lowkey</h1>
-        <p className="text-sm opacity-70">
-          Reddit-powered travel recs (UI wired to FastAPI).
-        </p>
-      </header>
+    <div className="relative flex h-screen w-full flex-col bg-[var(--background)] bg-noise overflow-hidden">
+      <HeaderBar />
 
-      <section className="flex flex-col gap-3 rounded-lg border p-4">
-        {messages.length === 0 ? (
-          <div className="text-sm opacity-70">
-            Ask something like: “3 days in Tokyo for food + thrift stores”.
+      <main className="flex-1 overflow-y-auto px-4 py-6 sm:px-6 md:px-20 lg:px-60 scroll-smooth">
+        <div className="flex flex-col gap-6 max-w-4xl mx-auto">
+          {messages.length === 0 && (
+            <EmptyState onSelectSuggestion={setInput} />
+          )}
+
+          <MessageList messages={messages} status={status} />
+
+          {error && <ErrorBanner message={error.message} />}
+        </div>
+      </main>
+
+      <footer className="px-4 pb-6 pt-4 bg-gradient-to-t from-[var(--background)] via-[var(--background)] to-transparent">
+        <div className="max-w-4xl mx-auto">
+          <ChatInput
+            input={input}
+            status={status}
+            onChange={setInput}
+            onSend={(text) => {
+              sendMessage({ text });
+              setInput("");
+            }}
+          />
+          <div className="text-center mt-3">
+            <p className="text-[10px] text-[var(--text-muted)] font-medium tracking-wide">
+              Lowkey can make mistakes. Check important info.
+            </p>
           </div>
-        ) : null}
-
-        {messages.map((message) => (
-          <div key={message.id} className="whitespace-pre-wrap">
-            <div className="text-xs opacity-60">
-              {message.role === "user" ? "You" : "Lowkey"}
-            </div>
-
-            <div className="mt-1">
-              {message.parts.map((part, i) => {
-                if (part.type === "text") {
-                  return <span key={`${message.id}-${i}`}>{part.text}</span>;
-                }
-                return null; // ignore non-text parts for now
-              })}
-            </div>
-          </div>
-        ))}
-
-        {error ? (
-          <div className="text-sm text-red-600">Error: {error.message}</div>
-        ) : null}
-      </section>
-
-      <form
-        className="flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-
-          const text = input.trim();
-          if (!text) return;
-
-          // TextStreamChatTransport expects plain text input like this:
-          sendMessage({ text });
-          setInput("");
-        }}
-      >
-        <input
-          className="flex-1 rounded-md border px-3 py-2"
-          value={input}
-          placeholder={
-            status === "streaming" ? "Lowkey is typing…" : "Type a message…"
-          }
-          onChange={(e) => setInput(e.currentTarget.value)}
-        />
-        <button
-          className="rounded-md border px-3 py-2"
-          type="submit"
-          disabled={status === "streaming"}
-        >
-          Send
-        </button>
-      </form>
-    </main>
+        </div>
+      </footer>
+    </div>
   );
 }
