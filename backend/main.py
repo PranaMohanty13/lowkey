@@ -1,11 +1,9 @@
-from typing import List, Literal, Any, Dict, Optional
-
+from typing import List, Literal, Any, Dict
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
-
-import GeminiWorking as brain
+import llm_client
 
 
 app = FastAPI()
@@ -19,7 +17,6 @@ app.add_middleware(
 )
 
 
-# --- Request schema (matches AI SDK UIMessage shape at a basic level) ---
 
 class TextPart(BaseModel):
     type: Literal["text"]
@@ -30,8 +27,6 @@ class UIMessage(BaseModel):
     id: str
     role: Literal["user", "assistant", "system"]
     parts: List[Dict[str, Any]] = Field(default_factory=list)
-    # We keep parts as Dict[str, Any] so tool parts won't break validation.
-    # We'll only extract type="text" parts in brain.py.
 
 
 class ChatRequest(BaseModel):
@@ -45,14 +40,12 @@ async def read_root():
 
 @app.post("/api/chat")
 async def chat(req: ChatRequest):
-    # Convert Pydantic models -> plain dicts for brain.py
     messages_as_dicts = [m.model_dump() for m in req.messages]
 
     return StreamingResponse(
-        brain.stream_gemini_from_ui_messages(messages_as_dicts),
+        llm_client.stream_chat_to_gemini(messages_as_dicts),
         media_type="text/plain; charset=utf-8",
         headers={
-            # Helpful for streaming + debugging
             "Cache-Control": "no-cache",
         },
     )
